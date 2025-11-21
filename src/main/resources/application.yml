@@ -17,7 +17,6 @@ jpa:
       format_sql: true
   show-sql: true
 
-# ??? ??? ??
 kakao:
   client-id: API_KEY
   redirect-uri: http://localhost:8080/api/auth/kakao/callback
