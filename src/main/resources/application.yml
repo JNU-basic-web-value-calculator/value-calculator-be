@@ -17,6 +17,19 @@ jpa:
       format_sql: true
   show-sql: true
 
+# ??? ??? ??
+kakao:
+  client-id: API_KEY
+  redirect-uri: http://localhost:8080/api/auth/kakao/callback
+  auth-url: https://kauth.kakao.com
+  api-url: https://kapi.kakao.com
+
+
+jwt:
+  secret: value-calculator-secret-key-make-it-very-long-for-security-at-least-256-bits
+  access-token-expiration: 3600000
+  refresh-token-expiration: 604800000
+
 logging:
   level:
     org.hibernate.SQL: DEBUG
