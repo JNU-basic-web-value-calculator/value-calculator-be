@@ -16,18 +16,18 @@ spring:
         format_sql: true
     show-sql: true
 
-# ??? ??? ??
+# 카카오 로그인 설정
 kakao:
   client-id: eky
   redirect-uri: http://localhost:8080/api/auth/kakao/callback
   auth-url: https://kauth.kakao.com
   api-url: https://kapi.kakao.com
 
-# JWT ??
+# JWT 설정
 jwt:
   secret: value-calculator-secret-key-make-it-very-long-for-security-at-least-256-bits-long
-  access-token-expiration: 3600000  # 1??
-  refresh-token-expiration: 604800000  # 7?
+  access-token-expiration: 3600000  # 1시간
+  refresh-token-expiration: 604800000  # 7일
 
 logging:
   level:
@@ -36,4 +36,3 @@ logging:
 
 server:
   port: 8080
-
