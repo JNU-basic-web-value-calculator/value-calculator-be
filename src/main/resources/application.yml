@@ -2,37 +2,37 @@ spring:
   application:
     name: value-calculator
 
-datasource:
-  url: jdbc:mysql://localhost:3306/value_calculator?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-  username: root
-  password: password
-  driver-class-name: com.mysql.cj.jdbc.Driver
+  datasource:
+    url: jdbc:mysql://localhost:3306/value_calculator?useSSL=false&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: les0805!
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
-jpa:
-  hibernate:
-    ddl-auto: validate
-  properties:
+  jpa:
     hibernate:
-      dialect: org.hibernate.dialect.MySQL8Dialect
-      format_sql: true
-  show-sql: true
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
 
+# ??? ??? ??
 kakao:
-  client-id: API_KEY
+  client-id: 977ad3d802eb9b6c2540dcae742c6426
   redirect-uri: http://localhost:8080/api/auth/kakao/callback
   auth-url: https://kauth.kakao.com
   api-url: https://kapi.kakao.com
 
-
+# JWT ??
 jwt:
-  secret: value-calculator-secret-key-make-it-very-long-for-security-at-least-256-bits
-  access-token-expiration: 3600000
-  refresh-token-expiration: 604800000
+  secret: value-calculator-secret-key-make-it-very-long-for-security-at-least-256-bits-long
+  access-token-expiration: 3600000  # 1??
+  refresh-token-expiration: 604800000  # 7?
 
 logging:
   level:
     org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.unit_wiseb.value_calculator: DEBUG
 
 server:
   port: 8080
