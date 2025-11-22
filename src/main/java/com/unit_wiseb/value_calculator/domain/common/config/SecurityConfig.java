@@ -25,11 +25,15 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                //요청 URL별 인증 설정
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/").permitAll()
-                        .requestMatchers("/health").permitAll()
+                        .requestMatchers(   //스웨거 관련 경로 허용
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers("/", "/health").permitAll()
                         .anyRequest().authenticated()
                 );
 
