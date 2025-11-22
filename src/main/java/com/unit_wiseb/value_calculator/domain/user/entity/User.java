@@ -16,6 +16,7 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
+    //카카오 회원번호 - 카카오에서 제공하는 고유 ID
     @Column(name = "kakao_id", nullable = false, unique = true)
     private Long kakaoId;
 

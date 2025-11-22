@@ -12,3 +12,4 @@ public class WebClientConfig {
         return WebClient.builder().build();
     }
 }
+//카카오 서버와 통신하는 도구인 webclient를 이 config 클래스로 spring에 등록해서 어디서든 사용할 수 있게
