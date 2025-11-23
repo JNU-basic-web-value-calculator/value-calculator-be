@@ -1,6 +1,8 @@
 package com.unit_wiseb.value_calculator.domain.user.controller;
 
 import com.unit_wiseb.value_calculator.domain.common.config.KakaoProperties;
+import com.unit_wiseb.value_calculator.domain.user.dto.AccessTokenResponse;
+import com.unit_wiseb.value_calculator.domain.user.dto.RefreshTokenRequest;
 import com.unit_wiseb.value_calculator.domain.user.dto.TokenResponse;
 import com.unit_wiseb.value_calculator.domain.user.service.KakaoAuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -108,20 +110,32 @@ public class AuthController {
      * 토큰 갱신
      * POST /api/auth/refresh
      * 리프레시 토큰으로 새로운 액세스 토큰 발급
-     * (추후 구현 예정)
+     * 액세스 토큰이 만료되었을 때 리프레시 토큰을 사용하여 갱신
      */
     @Operation(
-            summary = "토큰 갱신 (미구현)",
-            description = "리프레시 토큰으로 새로운 액세스 토큰을 발급합니다. (추후 구현 예정)"
+            summary = "토큰 갱신",
+            description = "리프레시 토큰으로 새로운 액세스 토큰을 발급합니다."
     )
-    @ApiResponse(responseCode = "200", description = "토큰 갱신 성공")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "토큰 갱신 성공"),
+            @ApiResponse(responseCode = "400", description = "유효하지 않거나 만료된 리프레시 토큰"),
+            @ApiResponse(responseCode = "500", description = "서버 오류")
+    })
     @PostMapping("/refresh")
-    public ResponseEntity<String> refreshToken(
-            @Parameter(description = "리프레시 토큰", required = true)
-            @RequestBody String refreshToken
+    public ResponseEntity<?> refreshToken(
+            @Parameter(description = "리프레시 토큰 요청", required = true)
+            @RequestBody RefreshTokenRequest request
     ) {
-        // TODO: 리프레시 토큰 검증 및 액세스 토큰 재발급
-        log.info("토큰 갱신 요청 (아직...미구현)");
-        return ResponseEntity.ok("토큰 갱신 기능 추후 구현 예정");
+        log.info("토큰 갱신 요청 수신");
+
+        try {
+            AccessTokenResponse response = kakaoAuthService.refreshAccessToken(request.getRefreshToken());
+            log.info("토큰 갱신 성공: userId={}", response.getUserId());
+
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            log.error("토큰 갱신 실패: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

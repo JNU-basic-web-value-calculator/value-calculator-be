@@ -1,6 +1,7 @@
 package com.unit_wiseb.value_calculator.domain.user.service;
 
 import com.unit_wiseb.value_calculator.domain.common.config.KakaoProperties;
+import com.unit_wiseb.value_calculator.domain.user.dto.AccessTokenResponse;
 import com.unit_wiseb.value_calculator.domain.user.dto.KakaoUserInfo;
 import com.unit_wiseb.value_calculator.domain.user.dto.TokenResponse;
 import com.unit_wiseb.value_calculator.domain.user.entity.RefreshToken;
@@ -147,8 +148,8 @@ public class KakaoAuthService {
 
     /**
      * 리프레시 토큰 저장 또는 업데이트
-     * - 기존 토큰 있음: 새 토큰으로 업데이트
-     * - 기존 토큰 없음: 새로 저장
+     * - 기존 토큰 있음 -> 새 토큰으로 업데이트
+     * - 기존 토큰 없음 -> 새로 저장
      */
     private void saveOrUpdateRefreshToken(Long userId, String refreshToken) {
         LocalDateTime expiresAt = LocalDateTime.now()
@@ -182,5 +183,51 @@ public class KakaoAuthService {
     public void logout(Long userId) {
         refreshTokenRepository.deleteByUserId(userId);
         log.info("로그아웃 완료: userId={}", userId);
+    }
+
+
+    /**
+     * 리프레시 토큰으로 액세스 토큰 갱신
+     * 1. 리프레시 토큰 검증 (JWT 유효성 + DB 존재 여부)
+     * 2. 리프레시 토큰 만료 여부 확인
+     * 3. 새로운 액세스 토큰 발급
+     */
+    @Transactional(readOnly = true)
+    public AccessTokenResponse refreshAccessToken(String refreshTokenValue) {
+        //리프레시 토큰 JWT 유효성 검증
+        if (!jwtService.validateToken(refreshTokenValue)) {
+            log.error("유효하지 않은 리프레시 토큰: {}", refreshTokenValue);
+            throw new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다.");
+        }
+
+        //DB에서 리프레시 토큰 조회
+        RefreshToken refreshToken = refreshTokenRepository
+                .findByRefreshToken(refreshTokenValue)
+                .orElseThrow(() -> {
+                    log.error("DB에 존재하지 않는 리프레시 토큰: {}", refreshTokenValue);
+                    return new IllegalArgumentException("존재하지 않는 리프레시 토큰입니다.");
+                });
+
+        //리프레시 토큰 만료 여부 확인
+        if (refreshToken.getExpiresAt().isBefore(LocalDateTime.now())) {
+            log.error("만료된 리프레시 토큰: userId={}", refreshToken.getUserId());
+            throw new IllegalArgumentException("만료된 리프레시 토큰입니다. 다시 로그인해주세요.");
+        }
+
+        //사용자 존재 여부 확인
+        User user = userRepository.findById(refreshToken.getUserId())
+                .orElseThrow(() -> {
+                    log.error("존재하지 않는 사용자: userId={}", refreshToken.getUserId());
+                    return new IllegalArgumentException("존재하지 않는 사용자입니다.");
+                });
+
+        //새로운 액세스 토큰 생성
+        String newAccessToken = jwtService.generateAccessToken(user.getId());
+        log.info("액세스 토큰 갱신 성공: userId={}, nickname={}", user.getId(), user.getNickname());
+
+        return AccessTokenResponse.builder()
+                .accessToken(newAccessToken)
+                .userId(user.getId())
+                .build();
     }
 }
