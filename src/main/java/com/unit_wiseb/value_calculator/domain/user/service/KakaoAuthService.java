@@ -12,6 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
@@ -33,14 +36,47 @@ public class KakaoAuthService {
     private final JwtService jwtService;
 
     /**
+     * 카카오 로그인 URL 생성
+     *
+     * @return 카카오 OAuth 인증 URL
+     */
+    public String getKakaoLoginUrl() {
+        String loginUrl = String.format(
+                "%s/oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code",
+                kakaoProperties.getAuthUrl(),
+                kakaoProperties.getClientId(),
+                kakaoProperties.getRedirectUri()
+        );
+
+        log.info("카카오 로그인 URL 생성: {}", loginUrl);
+        return loginUrl;
+    }
+
+    /**
+     * 카카오 액세스 토큰으로 사용자 정보 조회
+     * GET https://kapi.kakao.com/v2/user/me
+     *
+     * @param accessToken 카카오 액세스 토큰
+     * @return 카카오 사용자 정보
+     */
+    private KakaoUserInfo getKakaoUserInfo(String accessToken) {
+        String userInfoUri = kakaoProperties.getApiUrl() + "/v2/user/me";
+
+        // 카카오 서버에 HTTP GET 요청
+        return webClient.get()
+                .uri(userInfoUri)
+                .header("Authorization", "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(KakaoUserInfo.class)
+                .block();
+    }
+
+    /**
      * 카카오 로그인 처리
      * 1. 인가 코드로 카카오 액세스 토큰 요청
      * 2. 카카오 액세스 토큰으로 사용자 정보 조회
      * 3. 신규 회원이면 가입, 기존 회원이면 정보 업데이트
      * 4. JWT 토큰(액세스 토큰 + 리프레시 토큰) 생성 및 반환
-     *
-     * @param code 카카오 인가 코드
-     * @return 토큰 응답 (액세스 토큰, 리프레시 토큰, 사용자 정보)
      */
     @Transactional
     public TokenResponse login(String code) {
@@ -82,18 +118,18 @@ public class KakaoAuthService {
     private String getKakaoAccessToken(String code) {
         String tokenUri = kakaoProperties.getAuthUrl() + "/oauth/token";
 
-        Map<String, String> params = Map.of(
-                "grant_type", "authorization_code",
-                "client_id", kakaoProperties.getClientId(),
-                "redirect_uri", kakaoProperties.getRedirectUri(),
-                "code", code
-        );
+        //MultiValueMap 사용 (application/x-www-form-urlencoded 형식)
+        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+        formData.add("grant_type", "authorization_code");
+        formData.add("client_id", kakaoProperties.getClientId());
+        formData.add("redirect_uri", kakaoProperties.getRedirectUri());
+        formData.add("code", code);
 
         // 카카오 서버에 HTTP POST 요청
         Map<String, Object> response = webClient.post()
                 .uri(tokenUri)
                 .header("Content-Type", "application/x-www-form-urlencoded")
-                .bodyValue(params)
+                .body(BodyInserters.fromFormData(formData))  //fromFormData
                 .retrieve()
                 .bodyToMono(Map.class)
                 .block();
@@ -102,25 +138,12 @@ public class KakaoAuthService {
     }
 
     /**
-     * 카카오 액세스 토큰으로 사용자 정보 조회
-     * GET https://kapi.kakao.com/v2/user/me
-     */
-    private KakaoUserInfo getKakaoUserInfo(String accessToken) {
-        String userInfoUri = kakaoProperties.getApiUrl() + "/v2/user/me";
-
-        // 카카오 서버에 HTTP GET 요청
-        return webClient.get()
-                .uri(userInfoUri)
-                .header("Authorization", "Bearer " + accessToken)
-                .retrieve()
-                .bodyToMono(KakaoUserInfo.class)
-                .block();
-    }
-
-    /**
      * 사용자 정보 저장 또는 업데이트
      * - 신규 회원: DB에 새로 저장
      * - 기존 회원: 닉네임 업데이트
+     *
+     * @param kakaoUserInfo 카카오 사용자 정보
+     * @return 저장/업데이트된 사용자 엔티티
      */
     private User saveOrUpdateUser(KakaoUserInfo kakaoUserInfo) {
         Long kakaoId = kakaoUserInfo.getKakaoId();
@@ -150,6 +173,9 @@ public class KakaoAuthService {
      * 리프레시 토큰 저장 또는 업데이트
      * - 기존 토큰 있음 -> 새 토큰으로 업데이트
      * - 기존 토큰 없음 -> 새로 저장
+     *
+     * @param userId 사용자 ID
+     * @param refreshToken 리프레시 토큰 값
      */
     private void saveOrUpdateRefreshToken(Long userId, String refreshToken) {
         LocalDateTime expiresAt = LocalDateTime.now()
@@ -174,15 +200,6 @@ public class KakaoAuthService {
                             log.info("리프레시 토큰 저장: userId={}", userId);
                         }
                 );
-    }
-
-    /**
-     * 로그아웃 - 리프레시 토큰 삭제
-     */
-    @Transactional
-    public void logout(Long userId) {
-        refreshTokenRepository.deleteByUserId(userId);
-        log.info("로그아웃 완료: userId={}", userId);
     }
 
 
@@ -230,4 +247,17 @@ public class KakaoAuthService {
                 .userId(user.getId())
                 .build();
     }
+
+
+
+
+
+    /**
+     * 로그아웃 - 리프레시 토큰 삭제
+     */
+//    @Transactional
+//    public void logout(Long userId) {
+//        refreshTokenRepository.deleteByUserId(userId);
+//        log.info("로그아웃 완료: userId={}", userId);
+//    }
 }

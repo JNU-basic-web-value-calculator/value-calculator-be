@@ -88,23 +88,24 @@ public class AuthController {
      * POST /api/auth/logout
      * 리프레시 토큰을 DB에서 삭제
      * 클라이언트는 로컬 스토리지의 토큰도 함께 삭제해야 함!!!!
+     * 가치계산기는 다음 사이트에서 모듈로 들어가는 부분이므로 당장 로그아웃 기능이 필요하지 않아. 주석처리하였음
      */
-    @Operation(
-            summary = "로그아웃",
-            description = "리프레시 토큰을 삭제하여 로그아웃 처리합니다."
-    )
-    @ApiResponse(responseCode = "200", description = "로그아웃 성공")
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId
-    ) {
-        log.info("로그아웃 요청: userId={}", userId);
-
-        kakaoAuthService.logout(userId);
-
-        return ResponseEntity.ok("로그아웃 성공");
-    }
+//    @Operation(
+//            summary = "로그아웃",
+//            description = "리프레시 토큰을 삭제하여 로그아웃 처리합니다."
+//    )
+//    @ApiResponse(responseCode = "200", description = "로그아웃 성공")
+//    @PostMapping("/logout")
+//    public ResponseEntity<String> logout(
+//            @Parameter(description = "사용자 ID", required = true)
+//            @RequestParam Long userId
+//    ) {
+//        log.info("로그아웃 요청: userId={}", userId);
+//
+//        kakaoAuthService.logout(userId);
+//
+//        return ResponseEntity.ok("로그아웃 성공");
+//    }
 
     /**
      * 토큰 갱신
