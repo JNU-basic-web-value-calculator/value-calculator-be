@@ -1,5 +1,6 @@
 package com.unit_wiseb.value_calculator.domain.unit.controller;
 
+import com.unit_wiseb.value_calculator.domain.common.annotation.CurrentUserId;
 import com.unit_wiseb.value_calculator.domain.unit.dto.UnitIconResponse;
 import com.unit_wiseb.value_calculator.domain.unit.dto.UnitRequest;
 import com.unit_wiseb.value_calculator.domain.unit.dto.UnitResponse;
@@ -8,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -55,13 +57,13 @@ public class UnitController {
      */
     @Operation(
             summary = "내 커스텀 단위 목록 조회",
-            description = "사용자가 생성한 커스텀 환산 단위 목록을 조회합니다."
+            description = "사용자가 생성한 커스텀 환산 단위 목록을 조회합니다.",
+            security = @SecurityRequirement(name = "bearer-jwt")
     )
     @ApiResponse(responseCode = "200", description = "조회 성공")
     @GetMapping("/my")
     public ResponseEntity<List<UnitResponse>> getMyCustomUnits(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId
+            @Parameter(hidden = true) @CurrentUserId Long userId
     ) {
         log.info("커스텀 단위 목록 조회 요청: userId={}", userId);
 
@@ -75,13 +77,13 @@ public class UnitController {
      */
     @Operation(
             summary = "모든 단위 조회",
-            description = "기본 단위와 사용자의 커스텀 단위를 모두 조회합니다."
+            description = "기본 단위와 사용자의 커스텀 단위를 모두 조회합니다.",
+            security = @SecurityRequirement(name = "bearer-jwt")
     )
     @ApiResponse(responseCode = "200", description = "조회 성공")
     @GetMapping("/all")
     public ResponseEntity<List<UnitResponse>> getAllUnitsForUser(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId
+            @Parameter(hidden = true) @CurrentUserId Long userId
     ) {
         log.info("모든 단위 조회 요청: userId={}", userId);
 
@@ -97,7 +99,8 @@ public class UnitController {
      */
     @Operation(
             summary = "커스텀 단위 생성",
-            description = "사용자가 새로운 커스텀 환산 단위를 생성합니다."
+            description = "사용자가 새로운 커스텀 환산 단위를 생성합니다.",
+            security = @SecurityRequirement(name = "bearer-jwt")
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "생성 성공"),
@@ -105,8 +108,7 @@ public class UnitController {
     })
     @PostMapping
     public ResponseEntity<UnitResponse> createCustomUnit(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId,
+            @Parameter(hidden = true) @CurrentUserId Long userId,
             @Parameter(description = "단위 생성 요청", required = true)
             @Valid @RequestBody UnitRequest request
     ) {
@@ -123,7 +125,8 @@ public class UnitController {
      */
     @Operation(
             summary = "커스텀 단위 수정",
-            description = "사용자가 생성한 커스텀 단위를 수정합니다. 기본 단위는 수정할 수 없습니다."
+            description = "사용자가 생성한 커스텀 단위를 수정합니다. 기본 단위는 수정할 수 없습니다.",
+            security = @SecurityRequirement(name = "bearer-jwt")
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "수정 성공"),
@@ -132,8 +135,7 @@ public class UnitController {
     })
     @PutMapping("/{unitId}")
     public ResponseEntity<?> updateCustomUnit(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId,
+            @Parameter(hidden = true) @CurrentUserId Long userId,
             @Parameter(description = "단위 ID", required = true)
             @PathVariable Long unitId,
             @Parameter(description = "단위 수정 요청", required = true)
@@ -156,7 +158,8 @@ public class UnitController {
      */
     @Operation(
             summary = "커스텀 단위 삭제",
-            description = "사용자가 생성한 커스텀 단위를 삭제합니다. 기본 단위는 삭제할 수 없습니다."
+            description = "사용자가 생성한 커스텀 단위를 삭제합니다. 기본 단위는 삭제할 수 없습니다.",
+            security = @SecurityRequirement(name = "bearer-jwt")
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "삭제 성공"),
@@ -165,8 +168,7 @@ public class UnitController {
     })
     @DeleteMapping("/{unitId}")
     public ResponseEntity<String> deleteCustomUnit(
-            @Parameter(description = "사용자 ID", required = true)
-            @RequestParam Long userId,
+            @Parameter(hidden = true) @CurrentUserId Long userId,
             @Parameter(description = "단위 ID", required = true)
             @PathVariable Long unitId
     ) {
