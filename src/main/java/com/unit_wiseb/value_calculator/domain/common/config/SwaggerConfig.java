@@ -29,7 +29,13 @@ public class SwaggerConfig {
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")
-                                .description("JWT 액세스 토큰을 입력하세요 (Bearer 제외)")
+                                .in(SecurityScheme.In.HEADER)
+                                .name("Authorization")
+                                .description("JWT 액세스 토큰을 입력하세요.\n\n" +
+                                        "1. /api/auth/kakao/login으로 카카오 로그인\n" +
+                                        "2. /api/auth/kakao/callback에서 받은 accessToken 복사\n" +
+                                        "3. 우측 상단 [Authorize] 버튼 클릭\n" +
+                                        "4. 'Bearer ' 없이 토큰만 입력\n\n")
                         )
                 )
                 // 전역 보안 요구사항
