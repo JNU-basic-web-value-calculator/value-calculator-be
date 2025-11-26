@@ -25,4 +25,9 @@ public interface UnitRepository extends JpaRepository<Unit, Long> {
      * 기본 단위 + 해당 사용자의 커스텀 단위
      */
     List<Unit> findByUserIdIsNullAndIsDefaultTrueOrUserId(Long userId);
+
+    /**
+     * 특정 사용자의 커스텀 단위 개수 조회
+     */
+    long countByUserIdAndIsDefaultFalse(Long userId);
 }
