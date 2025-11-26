@@ -24,7 +24,7 @@ import java.util.List;
  * 환산 단위 API 컨트롤러
  * 단위 조회, 생성, 수정, 삭제
  */
-@Tag(name = "환산 단위 API", description = "환산 단위 관련 API")
+@Tag(name = "Unit", description = "환산 단위 관련 API")
 @Slf4j
 @RestController
 @RequestMapping("/api/units")

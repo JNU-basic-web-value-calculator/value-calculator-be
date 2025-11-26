@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-@Tag(name = "인증 API", description = "카카오 소셜 로그인 관련 API")
+@Tag(name = "User(kakao)", description = "카카오 소셜 로그인 관련 API")
 @Slf4j
 @RestController
 @RequestMapping("/api/auth")
