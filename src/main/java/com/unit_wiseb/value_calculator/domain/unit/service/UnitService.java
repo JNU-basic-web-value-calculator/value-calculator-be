@@ -69,11 +69,18 @@ public class UnitService {
 
     /**
      * 커스텀 단위 생성
-     * 사용자가 새로운 환산 단위를 생성
+     * 사용자가 새로운 환산 단위를 최대 3개까지 생성
      */
     @Transactional
     public UnitResponse createCustomUnit(Long userId, UnitRequest request) {
         log.info("커스텀 단위 생성: userId={}, unitName={}", userId, request.getUnitName());
+
+        //커스텀 단위 개수 확인 (최대 3개)
+        long customUnitCount = unitRepository.countByUserIdAndIsDefaultFalse(userId);
+        if (customUnitCount >= 3) {
+            log.warn("커스텀 단위 개수 초과: userId={}, currentCount={}", userId, customUnitCount);
+            throw new IllegalStateException("커스텀 단위는 최대 3개까지만 생성할 수 있습니다.");
+        }
 
         // 아이콘 존재 여부 확인
         UnitIcon icon = unitIconRepository.findById(request.getIconId())
