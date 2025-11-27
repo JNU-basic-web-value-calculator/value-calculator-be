@@ -58,33 +58,4 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = ErrorResponse.of("VALIDATION_FAILED", errorMessage);
         return ResponseEntity.badRequest().body(errorResponse);
     }
-
-    /**
-     * RuntimeException 처리
-     * - 예상하지 못한 런타임 에러
-     */
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
-        log.error("RuntimeException: {}", e.getMessage(), e);
-
-        ErrorResponse errorResponse = ErrorResponse.of(
-                "INTERNAL_SERVER_ERROR",
-                "서버 내부 오류가 발생했습니다."
-        );
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-    }
-
-    /**
-     * Exception 처리
-     */
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleException(Exception e) {
-        log.error("Unexpected exception: {}", e.getMessage(), e);
-
-        ErrorResponse errorResponse = ErrorResponse.of(
-                "INTERNAL_SERVER_ERROR",
-                "예상치 못한 오류가 발생했습니다."
-        );
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-    }
 }
