@@ -59,7 +59,7 @@ public class CalculationService {
                 .unitPrice(unit.getUnitPrice())
                 .unitCounter(unit.getUnitCounter())
                 .result(result.doubleValue())
-                .iconEmoji(unit.getIcon().getIconEmoji())
+                .iconPath(unit.getIcon().getIconPath())
                 .iconName(unit.getIcon().getIconName())
                 .build();
     }

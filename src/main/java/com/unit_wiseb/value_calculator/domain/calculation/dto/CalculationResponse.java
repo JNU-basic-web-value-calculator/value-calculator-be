@@ -29,8 +29,8 @@ public class CalculationResponse {
     @Schema(description = "환산 결과 (소수점 1자리)", example = "22.2")
     private Double result;
 
-    @Schema(description = "아이콘 이모지", example = "☕")
-    private String iconEmoji;
+    @Schema(description = "아이콘 경로", example = "/uploads/icons/coffee.png")
+    private String iconPath;
 
     @Schema(description = "아이콘 이름", example = "커피")
     private String iconName;

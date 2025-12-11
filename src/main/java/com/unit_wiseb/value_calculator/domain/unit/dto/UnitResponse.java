@@ -21,7 +21,7 @@ public class UnitResponse {
 
     private String unitCounter;
 
-    private String iconEmoji;
+    private String iconPath;
 
     private String iconName;
 
@@ -33,7 +33,7 @@ public class UnitResponse {
                 .unitName(unit.getUnitName())
                 .unitPrice(unit.getUnitPrice())
                 .unitCounter(unit.getUnitCounter())
-                .iconEmoji(unit.getIcon() != null ? unit.getIcon().getIconEmoji() : null)
+                .iconPath(unit.getIcon() != null ? unit.getIcon().getIconPath() : null)
                 .iconName(unit.getIcon() != null ? unit.getIcon().getIconName() : null)
                 .isDefault(unit.getIsDefault())
                 .build();

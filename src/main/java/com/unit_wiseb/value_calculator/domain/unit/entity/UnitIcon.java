@@ -17,8 +17,8 @@ public class UnitIcon {
     @Column(name = "icon_id")
     private Long id;
 
-    @Column(name = "icon_emoji", nullable = false, length = 10)
-    private String iconEmoji;
+    @Column(name = "icon_path", nullable = false, length = 255)
+    private String iconPath;
 
     @Column(name = "icon_name", nullable = false, length = 50)
     private String iconName;
