@@ -11,13 +11,13 @@ import lombok.Getter;
 public class UnitIconResponse {
 
     private Long iconId;
-    private String iconEmoji;
+    private String iconPath;
     private String iconName;
 
     public static UnitIconResponse from(UnitIcon icon) {
         return UnitIconResponse.builder()
                 .iconId(icon.getId())
-                .iconEmoji(icon.getIconEmoji())
+                .iconPath(icon.getIconPath())
                 .iconName(icon.getIconName())
                 .build();
     }
