@@ -6,9 +6,13 @@ services:
       - "8080:8080"
     env_file:
       - .env
+
+    volumes:
+      - ./application.yml:/app/config/application.yml:ro
+    environment:
+      SPRING_CONFIG_ADDITIONAL_LOCATION: /app/config/
+
     restart: unless-stopped
-    networks:
-      - value-calculator-network
 
 networks:
   value-calculator-network:
