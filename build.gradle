@@ -41,8 +41,6 @@ dependencies {
 	// Development
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-	// HTTP 클라이언트 (카카오 API 호출용)
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
 	// JWT 토큰 처리
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'

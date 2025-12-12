@@ -30,12 +30,14 @@ public class SecurityConfig {
 
                 // 요청 URL별 인증 설정
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/user/**", "/api/users/**").permitAll()
                         .requestMatchers(
+                                "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
+                                "/v3/api-docs",
                                 "/swagger-resources/**",
-                                "/swagger-ui.html"
+                                "/webjars/**"
                         ).permitAll()
                         .requestMatchers("/", "/health").permitAll()
                         .requestMatchers("/api/units/default").permitAll()

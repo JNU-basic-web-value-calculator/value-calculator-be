@@ -10,12 +10,13 @@ import com.unit_wiseb.value_calculator.domain.user.repository.RefreshTokenReposi
 import com.unit_wiseb.value_calculator.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
+
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -29,7 +30,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KakaoAuthService {
 
-    private final WebClient webClient;
+    private final RestClient restClient;
     private final KakaoProperties kakaoProperties;
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -63,12 +64,11 @@ public class KakaoAuthService {
         String userInfoUri = kakaoProperties.getApiUrl() + "/v2/user/me";
 
         // 카카오 서버에 HTTP GET 요청
-        return webClient.get()
+        return restClient.get()
                 .uri(userInfoUri)
                 .header("Authorization", "Bearer " + accessToken)
                 .retrieve()
-                .bodyToMono(KakaoUserInfo.class)
-                .block();
+                .body(KakaoUserInfo.class);
     }
 
     /**
@@ -126,13 +126,12 @@ public class KakaoAuthService {
         formData.add("code", code);
 
         // 카카오 서버에 HTTP POST 요청
-        Map<String, Object> response = webClient.post()
+        Map response = restClient.post()
                 .uri(tokenUri)
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .body(BodyInserters.fromFormData(formData))  //fromFormData
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .body(formData)
                 .retrieve()
-                .bodyToMono(Map.class)
-                .block();
+                .body(Map.class);
 
         return (String) response.get("access_token");
     }
