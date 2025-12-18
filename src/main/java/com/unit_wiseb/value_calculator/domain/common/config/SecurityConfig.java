@@ -64,7 +64,7 @@ public class SecurityConfig {
     }
 
     /**
-     * CORS 설정
+     * CORS 설정 수정했음
      * - 프론트엔드 로컬 개발 환경에서 백엔드 API 호출 허용
      */
     @Bean
