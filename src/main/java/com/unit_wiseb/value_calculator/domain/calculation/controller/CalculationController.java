@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/calculate")
 @RequiredArgsConstructor
 @Tag(name = "Calculation", description = "가치 계산 API")
-@SecurityRequirement(name = "bearerAuth")
 public class CalculationController {
 
     private final CalculationService calculationService;
@@ -29,9 +28,15 @@ public class CalculationController {
     /**
      * 가치 계산
      * POST /api/calculate
+     * - 로그인 선택사항 (비로그인도 가능)
+     * - 비로그인: 기본 단위만 사용 가능
+     * - 로그인: 기본 단위 + 내 커스텀 단위 사용 가능
      */
     @PostMapping
-    @Operation(summary = "가치 계산", description = "입력된 금액을 환산 단위로 변환합니다.")
+    @Operation(
+            summary = "가치 계산",
+            description = "입력된 금액을 환산 단위로 변환합니다. 로그인 없이도 사용 가능하며, 로그인 시 커스텀 단위를 사용할 수 있습니다."
+    )
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200",
@@ -39,11 +44,10 @@ public class CalculationController {
                     content = @Content(schema = @Schema(implementation = CalculationResponse.class))
             ),
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터"),
-            @ApiResponse(responseCode = "401", description = "인증 실패"),
             @ApiResponse(responseCode = "404", description = "환산 단위를 찾을 수 없음")
     })
     public ResponseEntity<CalculationResponse> calculate(
-            @Parameter(hidden = true) @CurrentUserId Long userId,
+            @Parameter(hidden = true) @CurrentUserId(required = false) Long userId,  // ⭐ required = false
             @Valid @RequestBody CalculationRequest request
     ) {
         CalculationResponse response = calculationService.calculate(userId, request);

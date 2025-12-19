@@ -1,23 +1,18 @@
 services:
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: value-calculator:latest
     container_name: value-calculator-app
     ports:
       - "8080:8080"
+    env_file:
+      - .env
+
+    volumes:
+      - ./application.yml:/app/config/application.yml:ro
     environment:
-      # 환경변수 주입 (.env 파일에서 로드되도록)
-      - DB_URL=${DB_URL}
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - KAKAO_CLIENT_ID=${KAKAO_CLIENT_ID}
-      - KAKAO_REDIRECT_URI=${KAKAO_REDIRECT_URI}
-      - JWT_SECRET=${JWT_SECRET}
-      - SPRING_PROFILES_ACTIVE=prod
+      SPRING_CONFIG_ADDITIONAL_LOCATION: /app/config/
+
     restart: unless-stopped
-    networks:
-      - value-calculator-network
 
 networks:
   value-calculator-network:
