@@ -2,6 +2,7 @@ package com.unit_wiseb.value_calculator.domain.common.resolver;
 
 import com.unit_wiseb.value_calculator.domain.common.annotation.CurrentUserId;
 import org.springframework.core.MethodParameter;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ public class CurrentUserIdArgumentResolver implements HandlerMethodArgumentResol
     /**
      * 파라미터 값 추출
      * SecurityContext에서 인증된 사용자 ID를 가져옴
+     * @CurrentUserId(required = false)인 경우 비로그인 사용자는 null 반환
      */
     @Override
     public Object resolveArgument(
@@ -41,12 +43,24 @@ public class CurrentUserIdArgumentResolver implements HandlerMethodArgumentResol
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // 인증되지 않았으면,
-        if (authentication == null || !authentication.isAuthenticated()) {
+        // 인증 정보가 없거나 익명 사용자인 경우
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication instanceof AnonymousAuthenticationToken) {
+
+            // @CurrentUserId의 required 속성 확인
+            CurrentUserId annotation = parameter.getParameterAnnotation(CurrentUserId.class);
+
+            // required=false면 null 반환 (비로그인 허용)
+            if (annotation != null && !annotation.required()) {
+                return null;
+            }
+
+            // required=true면 예외 발생 (기본값)
             throw new IllegalStateException("인증되지 않은 사용자입니다.");
         }
 
-        // principal에서 (JwtAuthenticationFilter에서 저장한 값)userId 추출
+        // principal에서 userId 추출 (JwtAuthenticationFilter에서 저장한 값)
         Object principal = authentication.getPrincipal();
 
         if (principal instanceof Long) {

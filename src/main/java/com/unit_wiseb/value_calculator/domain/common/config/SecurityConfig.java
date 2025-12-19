@@ -50,6 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/health").permitAll()
                         .requestMatchers("/api/units/default").permitAll()
                         .requestMatchers("/api/units/icons").permitAll()
+                        .requestMatchers("/api/calculate").permitAll()
                         .anyRequest().authenticated()
                 )
 
