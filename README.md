@@ -3,7 +3,7 @@
 > 금액을 나만의 단위로 환산하여 소비 가치를 재발견하는 서비스
 > 
 ## 개발팀
-<table width="100%" style="table-layout: fixed; min-width: 1000px;">
+<table width="100%">
   <tr>
     <td align="center" width="33.33%" valign="top">
       <a href="https://github.com/Hwangyerin">
@@ -11,7 +11,7 @@
         <sub><b>황예린</b></sub>
       </a>
       <br /><br />
-      <img src="https://img.shields.io/badge/Planning-FF69B4?style=flat-square&logo=Notion&logoColor=white" />
+      <img src="https://img.shields.io/badge/Planning-FF69B4?style=flat-square&logo=Notion&logoColor=white" /><br>
       <img src="https://img.shields.io/badge/UI%2FUX-F24E1E?style=flat-square&logo=Figma&logoColor=white" />
       <br />
       <div align="center" style="margin-top: 10px;">
@@ -28,7 +28,7 @@
         <sub><b>최범규</b></sub>
       </a>
       <br /><br />
-      <img src="https://img.shields.io/badge/Vanilla_JS-F7DF1E?style=flat-square&logo=JavaScript&logoColor=black" />
+      <img src="https://img.shields.io/badge/Vanilla_JS-F7DF1E?style=flat-square&logo=JavaScript&logoColor=black" /><br>
       <img src="https://img.shields.io/badge/Matter.js-2C3E50?style=flat-square&logo=physics&logoColor=white" />
       <br />
       <div align="center" style="margin-top: 10px;">
@@ -45,7 +45,7 @@
         <sub><b>이은서</b></sub>
       </a>
       <br /><br />
-      <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=Spring-Boot&logoColor=white" />
+      <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=flat-square&logo=Spring-Boot&logoColor=white" /><br>
       <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white" />
       <br />
       <div align="center" style="margin-top: 10px;">
