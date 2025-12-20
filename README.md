@@ -3,7 +3,7 @@
 > 금액을 나만의 단위로 환산하여 소비 가치를 재발견하는 서비스
 > 
 ## 개발팀
-<table width="100%">
+<table width="100%" style="table-layout: fixed; min-width: 1000px;">
   <tr>
     <td align="center" width="33.33%" valign="top">
       <a href="https://github.com/Hwangyerin">
