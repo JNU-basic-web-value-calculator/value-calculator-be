@@ -84,7 +84,7 @@
 ### Backend
 - **Framework**: Spring Boot 4.0.0
 - **Language**: Java 21
-- **Build Tool**: Gradle 8.11.1
+- **Build Tool**: Gradle 9.2.0
 - **ORM**: Spring Data JPA
 - **Security**: Spring Security + JWT
 - **API Documentation**: SpringDoc OpenAPI (Swagger)
